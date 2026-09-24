@@ -59,8 +59,9 @@ Writes are logged with undo entries (`list_undo_history` / `undo_operations`). S
 
 Lose It! has no official API. `loseit-mcp` signs in with your account email/password and
 calls the private web-app endpoint (GWT-RPC), so expect it to break occasionally when
-Lose It! ships a new web build (the server reports what changed; see its README for
-`LOSEIT_STRONG_NAME` / `LOSEIT_POLICY_HASH` overrides).
+Lose It! ships a new web build. When `server_status` says the private API "did not
+respond as expected", run `python3 scripts/loseit_gwt_ids.py` and copy the printed
+`LOSEIT_STRONG_NAME` / `LOSEIT_POLICY_HASH` into the `loseit` env in `.mcp.json`.
 
 - **Pinned by commit.** `.mcp.json` runs it with `uvx` from a fixed commit (tag v0.6.0).
   This code receives your Lose It! password — skim the diff before bumping the pin.
