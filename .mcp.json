@@ -3,11 +3,28 @@
     "ynab": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@maro-org/ynab-mcp"],
+      "args": [
+        "-y",
+        "@maro-org/ynab-mcp"
+      ],
       "env": {
         "YNAB_API_TOKEN": "${YNAB_API_TOKEN}",
         "YNAB_READ_ONLY": "false",
         "NODE_USE_ENV_PROXY": "1"
+      }
+    },
+    "loseit": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/cabird/loseit-mcp@c1bf69cefb2c709688a517fe9b030ad2fe3f67f5",
+        "loseit-mcp",
+        "serve"
+      ],
+      "env": {
+        "LOSEIT_EMAIL": "${LOSEIT_EMAIL}",
+        "LOSEIT_PASSWORD": "${LOSEIT_PASSWORD}"
       }
     }
   }
