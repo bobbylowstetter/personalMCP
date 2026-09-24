@@ -1,22 +1,37 @@
 {
-  "enabledMcpjsonServers": ["ynab"],
+  "enabledMcpjsonServers": [
+    "ynab",
+    "loseit"
+  ],
   "permissions": {
     "defaultMode": "dontAsk",
     "allow": [
       "mcp__ynab",
+      "mcp__loseit__get_weight_history",
+      "mcp__loseit__get_diary",
+      "mcp__loseit__search_food",
+      "mcp__loseit__describe_food",
+      "mcp__loseit__whoami",
+      "mcp__loseit__server_status",
       "mcp__Composio__COMPOSIO_SEARCH_TOOLS",
       "mcp__Composio__COMPOSIO_MULTI_EXECUTE_TOOL",
       "mcp__Composio__COMPOSIO_GET_TOOL_SCHEMAS"
+    ],
+    "deny": [
+      "mcp__loseit__log_food",
+      "mcp__loseit__log_custom_food",
+      "mcp__loseit__log_weight",
+      "mcp__loseit__delete_entry"
     ]
   },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__ynab__.*|mcp__Composio__COMPOSIO_SEARCH_TOOLS|mcp__Composio__COMPOSIO_MULTI_EXECUTE_TOOL|mcp__Composio__COMPOSIO_GET_TOOL_SCHEMAS",
+        "matcher": "mcp__ynab__.*|mcp__loseit__(get_weight_history|get_diary|search_food|describe_food|whoami|server_status)|mcp__Composio__COMPOSIO_SEARCH_TOOLS|mcp__Composio__COMPOSIO_MULTI_EXECUTE_TOOL|mcp__Composio__COMPOSIO_GET_TOOL_SCHEMAS",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Unattended scheduled YNAB routine - pre-approved via PreToolUse hook\"}}'"
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Unattended scheduled YNAB/Lose It routine - pre-approved via PreToolUse hook\"}}'"
           }
         ]
       }
