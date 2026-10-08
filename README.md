@@ -58,12 +58,15 @@ Writes are logged with undo entries (`list_undo_history` / `undo_operations`). S
 ## Lose It!
 
 Lose It! has no official API. `loseit-mcp` signs in with your account email/password and
-calls the private web-app endpoint (GWT-RPC), so expect it to break occasionally when
-Lose It! ships a new web build. When `server_status` says the private API "did not
-respond as expected", run `python3 scripts/loseit_gwt_ids.py` and copy the printed
-`LOSEIT_STRONG_NAME` / `LOSEIT_POLICY_HASH` into the `loseit` env in `.mcp.json`.
+calls the private web-app endpoint (GWT-RPC). That protocol is tied to Lose It!'s current
+web build, identified by `LOSEIT_STRONG_NAME` / `LOSEIT_POLICY_HASH`, which change every
+time Lose It! deploys.
 
-- **Pinned by commit.** `.mcp.json` runs it with `uvx` from a fixed commit (tag v0.6.0).
+- **Build IDs are discovered at startup.** `.mcp.json` launches `scripts/loseit-mcp.sh`,
+  which runs `scripts/loseit_gwt_ids.py` to read the current IDs from Lose It!'s public
+  web-app JS, then starts the server with them. If discovery fails it falls back to the
+  IDs pinned in `.mcp.json` (refresh those by running the Python script by hand).
+- **Pinned by commit.** The launcher runs `uvx` from a fixed commit (tag v0.6.0).
   This code receives your Lose It! password — skim the diff before bumping the pin.
 - **Read-only by policy.** `.claude/settings.json` allows `get_weight_history`,
   `get_diary`, `search_food`, `describe_food`, `whoami`, `server_status`, and denies
