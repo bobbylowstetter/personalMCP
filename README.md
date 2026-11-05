@@ -64,16 +64,23 @@ time Lose It! deploys.
 
 - **Build IDs are discovered at startup.** `.mcp.json` launches `scripts/loseit-mcp.sh`,
   which runs `scripts/loseit_gwt_ids.py` to read the current IDs from Lose It!'s public
-  web-app JS, then starts the server with them. If discovery fails it falls back to the
-  IDs pinned in `.mcp.json` (refresh those by running the Python script by hand).
+  web-app JS. If discovery fails it falls back to the IDs pinned in `.mcp.json` (refresh
+  those by running the Python script by hand).
+- **Type schemas are rebuilt at startup.** The lose-it SDK ships a fixed `_schemas.json`;
+  when Lose It! changes a model class, every response containing it fails to decode
+  ("response was too large to decode"). The launcher runs the server through
+  `scripts/loseit_serve.py`, which rebuilds the schemas from the live JS whenever the build
+  differs from the shipped one, caches them in `~/.cache/loseit-mcp/`, and falls back to
+  the shipped schemas if the rebuild doesn't reproduce the unchanged types.
 - **Pinned by commit.** The launcher runs `uvx` from a fixed commit (tag v0.6.0).
   This code receives your Lose It! password — skim the diff before bumping the pin.
 - **Read-only by policy.** `.claude/settings.json` allows `get_weight_history`,
   `get_diary`, `search_food`, `describe_food`, `whoami`, `server_status`, and denies
   `log_food`, `log_custom_food`, `log_weight`, `delete_entry`.
 - **Network.** In Claude Code on the web, the environment's network policy must allow
-  `api.loseit.com` and `www.loseit.com`, plus `github.com` / `pypi.org` for `uvx` to
-  install the server.
+  `api.loseit.com`, `www.loseit.com`, and `d3hsih69yn4d89.cloudfront.net` (Lose It!'s
+  web-app JS, used for build IDs and schemas), plus `github.com` / `pypi.org` for `uvx`
+  to install the server.
 - The session token is cached at `~/.config/loseit-mcp/session.json` and refreshes itself.
 
 ## Cloud Routines
@@ -82,15 +89,11 @@ Routines are project-scoped, so a Routine pointed at this repo picks up both MCP
 `permissions.defaultMode: dontAsk` plus the `PreToolUse` hook in `.claude/settings.json`
 pre-approve the allowed tools so unattended runs don't stall on prompts.
 
-The routine instructions live in Notion (Personal AI hub):
+The routine instructions live in the `bobodocs` Obsidian vault (private GitHub repo
+`bobbylowstetter/bobodocs`), under `Personal AI/Jobs/`:
 
-- **YNAB Instructions** → daily categorization, report on *YNAB Transaction Log*.
-- **Lose It Instructions** → weekly average weight + patterns, report on *Weight Log*.
-
-Example weekly prompt:
-
-> Follow the "Lose It Instructions" page in Notion: pull my Lose It! weigh-ins and
-> diary with the loseit MCP server (read-only) and refresh the Weight Log page.
+- **YNAB Instructions.md** → daily categorization and dashboard refresh.
+- **Lose It Instructions.md** → weekly average weight + patterns (run on Mondays).
 
 ## Security note
 
